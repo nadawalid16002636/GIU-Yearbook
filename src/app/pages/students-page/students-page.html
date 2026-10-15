@@ -1,9 +1,10 @@
 <!-- =====================================================================
      FILE: pages/students-page/students-page.html
-     Read this page top to bottom: it matches the Figma frame top to bottom.
+     WHAT: Displays the title, filters and student card grid.
+     WHY: Helps visitors find students and open their stories.
      ===================================================================== -->
 
-<!-- STEP 1: HERO (overline, big serif title, description) -->
+<!-- Page title and introduction. -->
 <section class="hero">
   <div class="hero__text">
     <p class="overline">THE GIU YEARBOOK / CLASS OF 2028</p>
@@ -19,21 +20,16 @@
   </div>
 </section>
 
-<!-- STEP 2: TAB ROW. For now there is a single tab, "All students".
-     TIP: later, Graduation / Campus life tabs from the kit can reuse this. -->
 <div class="tabs">
-  <span class="tabs__tab"
-    >All students <b>{{ totalLabel() }}</b></span
-  >
-  <span class="tabs__hint">Every face has a story. Select a card to read theirs.</span>
+  <span class="tabs__tab">
+    All students <b>{{ totalLabel() }}</b>
+  </span>
+  <span class="tabs__hint">
+    Every face has a story. Select a card to read theirs.
+  </span>
 </div>
 
-<!-- STEP 3: FILTER BAR.
-     (input) / (change) = EVENT BINDINGS: round brackets mean
-     "when this happens, run this method".
-     [value] = PROPERTY BINDING: show the current signal value.
-     COMMON MISTAKE: writing searchText instead of searchText().
-     Signals are functions, so you must CALL them to read the value. -->
+<!-- Controls update the search, faculty and sorting signals. -->
 <div class="filters">
   <label class="field field--search">
     <span class="visually-hidden">Search students by name</span>
@@ -50,7 +46,6 @@
     <span class="visually-hidden">Filter by faculty</span>
     <select [value]="selectedFaculty()" (change)="onFacultyChange($event)">
       <option value="all">All faculties</option>
-      <!-- @for builds one <option> per faculty found in the data -->
       @for (f of faculties(); track f) {
         <option [value]="f">{{ f }}</option>
       }
@@ -67,32 +62,31 @@
     <img src="icons/chevron-down.svg" alt="" aria-hidden="true" />
   </label>
 
-  <!-- aria-live: screen readers announce the new count after each filter. -->
-  <p class="filters__count" aria-live="polite">{{ visibleStudents().length }} student stories</p>
+  <!-- Announce the updated result count to screen readers. -->
+  <p class="filters__count" aria-live="polite">
+    {{ visibleStudents().length }} student stories
+  </p>
 </div>
 
-<!-- STEP 4: THE THREE STATES OF DATA LOADING.
-     @if / @else if / @else shows exactly one block.
-     Real apps ALWAYS handle: loading, error, empty and success. -->
+<!-- Display loading, error, empty or success content. -->
 @if (loading()) {
   <p class="status" role="status">Loading students…</p>
 } @else if (errorMessage()) {
   <p class="status status--error" role="alert">{{ errorMessage() }}</p>
 } @else if (visibleStudents().length === 0) {
-  <p class="status">No students match your search. Try a different name or faculty.</p>
+  <p class="status">
+    No students match your search. Try a different name or faculty.
+  </p>
 } @else {
-  <!-- STEP 5: THE GRID. One <app-student-card> per student.
-       [student]="s" passes the data into the card's input(). -->
   <div class="grid" aria-label="Student directory">
     @for (s of visibleStudents(); track s.id) {
-      <!-- STUDENT CARD GOES HERE -->
-
-      <h2>{{ s.name }}</h2>
+      <!-- Pass the current student's data into a reusable card. -->
+      <app-student-card [student]="s" />
     }
   </div>
 }
 
-<!-- STEP 6: DIRECTORY END (completion message + Back to top) -->
+<!-- Show the result summary and return-to-top button. -->
 @if (!loading() && !errorMessage()) {
   <div class="end">
     <p class="end__message">
