@@ -1,8 +1,8 @@
 /* =====================================================================
    FILE: src/app/models/student.model.ts
    WHAT: An INTERFACE describing the shape of one student.
-   WHY:  TypeScript can then warn you if you misspell `student.nmae`.
-         It is also a contract: the Laravel API will later have to return
+   WHY:  TypeScript can then warn you if you misspell `student.name`.
+         It is also a contract: the Lara vel API will later have to return
          JSON with exactly these fields.
 
    STEP 1: Look at one student card in Figma. List what it shows:

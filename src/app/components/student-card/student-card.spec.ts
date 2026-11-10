@@ -1,21 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { StudentCard } from './student-card';
 
 describe('StudentCard', () => {
-  let component: StudentCard;
-  let fixture: ComponentFixture<StudentCard>;
-
-  beforeEach(async () => {
+  it('renders a student and links to their story', async () => {
     await TestBed.configureTestingModule({
       imports: [StudentCard],
+      providers: [provideRouter([])],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(StudentCard);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(StudentCard);
+    fixture.componentRef.setInput('student', {
+      id: 1, name: 'Maya Hassan', faculty: 'Engineering', classYear: 2028,
+      quote: 'Build things that make a difference.', photo: 'maya.jpg', featured: true,
+    });
     await fixture.whenStable();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('h3')?.textContent).toContain('Maya Hassan');
+    expect(element.querySelector('a')?.getAttribute('href')).toBe('/students/1');
   });
 });

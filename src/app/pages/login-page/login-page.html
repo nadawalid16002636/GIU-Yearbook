@@ -1,0 +1,125 @@
+
+
+<section class="login">
+  <div class="invitation">
+    <div class="invitation__content">
+      <p>GIU · CLASS OF 2028</p>
+      <h1>Four years of memories.<br>One place to keep them.</h1>
+      <p>
+        Your university journey deserves to be remembered.
+        Sign in to create your yearbook story.
+      </p>
+    </div>
+  </div>
+
+  <form
+    class="form"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
+    <div class="form__intro">
+      <p class="overline">STUDENT PORTAL</p>
+      <h2>Welcome back.</h2>
+      <p>
+        Sign in with your university credentials
+        to access your profile.
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="email">
+        University email
+      </label>
+
+      <div
+        class="field__box"
+        [class.field__box--invalid]="email.touched && email.invalid"
+      >
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="your.name@student.giu-uni.de"
+          autocomplete="username"
+        />
+      </div>
+
+      @if (email.touched && email.invalid) {
+        <p class="field__error" role="alert">
+          @if (email.hasError('required')) {
+            Enter your university email.
+          } @else {
+            Enter a valid email address.
+          }
+        </p>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="password">
+        Password
+      </label>
+
+      <div
+        class="field__box"
+        [class.field__box--invalid]="password.touched && password.invalid"
+      >
+        <input
+          id="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+        />
+
+        <button
+          type="button"
+          class="field__toggle"
+          (click)="showPassword.set(!showPassword())"
+        >
+          {{ showPassword() ? 'Hide' : 'Show' }}
+        </button>
+      </div>
+
+      @if (password.touched && password.invalid) {
+        <p class="field__error" role="alert">
+          @if (password.hasError('required')) {
+            Enter your password.
+          } @else {
+            Your password must have at least 8 characters.
+          }
+        </p>
+      }
+    </div>
+
+    <div class="prefs">
+      <label class="check">
+        <input type="checkbox" formControlName="remember" />
+        <span>Keep me signed in</span>
+      </label>
+
+      <button type="button" class="prefs__link">
+        Forgot password?
+      </button>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="form__error" role="alert">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    <button
+      type="submit"
+      class="btn btn--primary"
+      [disabled]="submitting()"
+    >
+      {{ submitting() ? 'Signing in…' : 'Sign in to my profile →' }}
+    </button>
+
+    <p class="form__footer">
+      Your information is securely protected.
+    </p>
+  </form>
+</section>

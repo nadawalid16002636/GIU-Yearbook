@@ -1,0 +1,189 @@
+
+<section class="intro">
+  <div>
+    <p class="overline">YOUR YEARBOOK STORY</p>
+    <h1>Make this page yours.</h1>
+    <p>Tell your story and share your favourite university memories.</p>
+  </div>
+
+  <div class="signed-in">
+    <span>SIGNED IN AS</span>
+    <strong>{{ user()?.email }}</strong>
+  </div>
+</section>
+
+@if (student(); as s) {
+  <div class="columns">
+
+    <form
+      class="card"
+      [formGroup]="form"
+      (ngSubmit)="saveDraft()"
+      novalidate
+    >
+
+      <div class="identity">
+        <div>
+          <h2>{{ s.name }}</h2>
+          <p>{{ s.faculty }}</p>
+        </div>
+        <span class="draft-tag">Draft · Not published</span>
+      </div>
+
+      <div class="group">
+        <label class="label">Your photo</label>
+        <div class="photo-area">
+          <img [src]="s.photo" [alt]="s.name" />
+          <div class="photo-upload">
+            <strong>Upload a photo</strong>
+            <p>JPG or PNG, maximum 5 MB</p>
+            <span>Photo upload is coming soon.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <label class="label" for="quote">Your quote</label>
+        <input
+          id="quote"
+          class="control"
+          type="text"
+          formControlName="quote"
+          (blur)="form.controls.quote.markAsTouched()"
+        />
+
+        <p class="hint" [class.hint--error]="quoteLength() > 160">
+          A few words to leave behind.
+          {{ quoteLength() }} / 160 characters
+        </p>
+
+        @if (
+          form.controls.quote.touched &&
+          form.controls.quote.hasError('required')
+        ) {
+          <p class="error" role="alert">
+            Your quote cannot be empty.
+          </p>
+        }
+      </div>
+
+      <div class="group">
+        <label class="label" for="story">Your story</label>
+
+        <textarea
+          id="story"
+          class="control control--story"
+          formControlName="story"
+        ></textarea>
+
+        <p
+          class="hint"
+          [class.hint--error]="values().story.length > 1000"
+        >
+          Tell us about your time at GIU.
+          {{ values().story.length }} / 1000 characters
+        </p>
+      </div>
+
+      <div class="pair">
+        <div class="group">
+          <label class="label" for="moment">
+            A moment to keep
+          </label>
+          <textarea
+            id="moment"
+            class="control control--short"
+            formControlName="moment"
+          ></textarea>
+        </div>
+
+        <div class="group">
+          <label class="label" for="next">
+            What's next?
+          </label>
+          <textarea
+            id="next"
+            class="control control--short"
+            formControlName="next"
+          ></textarea>
+        </div>
+      </div>
+
+      <label class="consent">
+        <input type="checkbox" formControlName="consent" />
+        <span>
+          I'm happy for my photo, quote, and story to appear
+          in the Class of 2028 yearbook.
+        </span>
+      </label>
+
+      <div class="actions">
+        <p class="actions__status" role="status">
+          @if (storageError()) {
+            Could not save: browser storage is full.
+          } @else if (changed()) {
+            Unsaved changes
+          } @else if (savedAt(); as time) {
+            Draft saved at {{ time | date: 'HH:mm' }}
+          } @else {
+            No changes yet
+          }
+        </p>
+
+        <div class="actions__buttons">
+          <button
+            type="button"
+            class="btn"
+            (click)="saveDraft()"
+          >
+            Save draft
+          </button>
+
+          <button
+            type="button"
+            class="btn btn--primary"
+            disabled
+          >
+            Publish profile →
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <aside class="preview">
+      <p class="preview__label">YOUR DIRECTORY CARD</p>
+      <p class="preview__status">PREVIEW</p>
+
+      <div class="mini">
+        <img [src]="s.photo" [alt]="s.name" />
+        <div class="mini__content">
+          <h3>{{ s.name }}</h3>
+          <p>{{ s.faculty }}</p>
+          <p class="mini__quote">
+            “{{ values().quote }}”
+          </p>
+        </div>
+      </div>
+
+      <div class="guidance">
+        <h3>A note on your story</h3>
+        <p>
+          Your memories make the yearbook special.
+          Save your draft whenever you want.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="signout"
+        (click)="signOut()"
+      >
+        Sign out of your account
+      </button>
+    </aside>
+
+  </div>
+} @else {
+  <p class="status">Loading your profile…</p>
+}
